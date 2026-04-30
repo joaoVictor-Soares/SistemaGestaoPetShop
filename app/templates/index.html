@@ -1,11 +1,105 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>PetShop</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #0f172a;
+            color: white;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        section {
+            background: #1e293b;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+
+        input {
+            margin: 5px;
+            padding: 8px;
+        }
+
+        button {
+            padding: 8px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #2563eb;
+        }
+
+        ul {
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
-    
+
+<h1>Sistema PetShop</h1>
+
+<section>
+    <h2>Clientes</h2>
+    <form id="formCliente">
+        <input type="text" id="nome" placeholder="Nome" required>
+        <input type="text" id="telefone" placeholder="Telefone" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <button type="submit">Cadastrar</button>
+    </form>
+
+    <ul id="listaClientes"></ul>
+</section>
+
+<section>
+    <h2>Pets</h2>
+    <form id="formPet">
+        <input type="text" id="nome_pet" placeholder="Nome do Pet" required>
+        <input type="text" id="tipo" placeholder="Tipo" required>
+        <input type="text" id="raca" placeholder="Raça" required>
+        <input type="number" id="idade" placeholder="Idade" required>
+        <input type="number" id="id_cliente" placeholder="ID Cliente" required>
+        <button type="submit">Cadastrar</button>
+    </form>
+
+    <ul id="listaPets"></ul>
+</section>
+
+<section>
+    <h2>Serviços</h2>
+    <form id="formServico">
+        <input type="number" id="id_pet" placeholder="ID Pet" required>
+        <input type="text" id="tipo_servico" placeholder="Tipo (banho/tosa)" required>
+        <input type="date" id="data" required>
+        <input type="number" id="valor" placeholder="Valor" required>
+        <button type="submit">Registrar</button>
+    </form>
+
+    <ul id="listaServicos"></ul>
+</section>
+
+<section>
+    <h2>Produtos</h2>
+    <form id="formProduto">
+        <input type="text" id="nome_produto" placeholder="Nome" required>
+        <input type="text" id="descricao" placeholder="Descrição" required>
+        <input type="number" id="preco" placeholder="Preço" required>
+        <input type="number" id="quantidade" placeholder="Quantidade" required>
+        <button type="submit">Cadastrar</button>
+    </form>
+
+    <ul id="listaProdutos"></ul>
+</section>
+
+<script src="../static/script.js"></script>
 </body>
 </html>
