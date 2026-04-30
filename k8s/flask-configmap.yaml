@@ -6,4 +6,4 @@ metadata:
 data:
   DB_HOST: mysql-service
   DB_NAME: PetShop
-  DB_USER: root
+  DB_USER: user

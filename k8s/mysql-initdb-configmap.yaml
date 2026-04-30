@@ -5,6 +5,10 @@ metadata:
   namespace: gestao-petshop
 data:
   init.sql: |
+
+    CREATE DATABASE IF NOT EXISTS PetShop;
+    USE PetShop;
+    
     CREATE TABLE IF NOT EXISTS clientes (
       id INT AUTO_INCREMENT PRIMARY KEY,
       nome VARCHAR(100) NOT NULL,

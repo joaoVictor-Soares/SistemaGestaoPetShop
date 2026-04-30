@@ -1,13 +1,16 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 import mysql.connector
 import os 
+import json
 import time
+from flask_cors import CORS 
 
 app = Flask(__name__)
+CORS(app)
 
 DB_HOST = os.getenv("DB_HOST", "mysql-service")
 DB_NAME = os.getenv("DB_NAME", "PetShop")
-DB_USER = os.getenv("DB_USER", "USER")
+DB_USER = os.getenv("DB_USER", "user")
 DB_PASSWORD = os.getenv ("DB_PASSWORD", "senha123")
 
 def conectar_bd():
@@ -26,7 +29,7 @@ def conectar_bd():
             time.sleep(3)
     return None
 
-@app.route("/cliente", methods=["GET", "POST"])
+@app.route("/cliente/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
         nome = request.form["nome"]
@@ -37,25 +40,26 @@ def index():
         if conexao:
             cursor = conexao.cursor()
             cursor.execute(
-                "INSERT INTO contatos (nome, telefone, email)",
+                "INSERT INTO clientes (nome, telefone, email) VALUES(%s, %s, %s)",
                 (nome, telefone, email)
             )
         conexao.commit()
         conexao.close()
         conexao.close()
 
-    contatos = []
+    clientes = []
     conexao = conectar_bd()
     if conexao:
         cursor = conexao.cursor()
-        cursor.execute("SELECT id, nome, telefone, email FROM contatos ORDER BY id")
-        contatos = cursor.fetchall()
+        cursor.execute("SELECT id, nome, telefone, email FROM clientes ORDER BY id")
+        clientes = cursor.fetchall()
+        cliente_json = json.dumps(clientes)
         cursor.close()
         conexao.close()
-    return jsonify (contatos)
+    return jsonify (cliente_json)
 
 @app.route("/pets", methods=["GET", "POST"])
-def index():
+def index1():
     if request.method == "POST":
         nome_pet = request.form["nome_pet"]
         tipo = request.form["tipo"]
@@ -67,7 +71,7 @@ def index():
         if conexao:
             cursor = conexao.cursor()
             cursor.execute(
-                "INSERT INTO pets (nome_pet, tipo, raca, idade, id_cliente)",
+                "INSERT INTO pets (nome_pet, tipo, raca, idade, id_cliente) VALUES(%s, %s, %s, %s, %s)",
                 (nome_pet, tipo, raca, idade, id_cliente)
             )
         conexao.commit()
@@ -78,14 +82,16 @@ def index():
     conexao = conectar_bd()
     if conexao:
         cursor = conexao.cursor()
-        cursor.execute("SELECT id, nome_pet, tipo, raca, idade, id_cliente FROM pets ORDER BY id")
+        cursor.execute(
+            "SELECT p.id, p.nome_pet, p.tipo, p.raca, p.idade, c.nome AS nome_dono FROM pets as p INNER JOIN clientes as c ON c.id = p.id_cliente ORDER BY p.id"
+            )
         pets = cursor.fetchall()
         cursor.close()
         conexao.close()
     return jsonify (pets)
 
 @app.route("/servicos", methods=["GET", "POST"])
-def index():
+def index2():
     if request.method == "POST":
         id_pet = request.form["id_pet"]
         tipo = request.form["tipo"]
@@ -107,14 +113,16 @@ def index():
     conexao = conectar_bd()
     if conexao:
         cursor = conexao.cursor()
-        cursor.execute("SELECT id, id_pet, tipo, data, valor FROM servicos ORDER BY id")
+        cursor.execute(
+            "SELECT s.id, p.nome_pet AS pet, s.tipo, s.data, s.valor FROM servicos AS s INNER JOIN pets as p on p.id = s.id_pet ORDER BY s.id"
+            )
         servicos = cursor.fetchall()
         cursor.close()
         conexao.close()
     return jsonify (servicos)
 
 @app.route("/produtos", methods=["GET", "POST"])
-def index():
+def index3():
     if request.method == "POST":
         nome = request.form["nome"]
         descricao = request.form["descricao"]
@@ -143,7 +151,7 @@ def index():
     return jsonify (produtos)
 
 @app.route("/fornecedores", methods=["GET", "POST"])
-def index():
+def index4():
     if request.method == "POST":
         nome = request.form["nome"]
         telefone = request.form["telefone"]
@@ -165,14 +173,16 @@ def index():
     conexao = conectar_bd()
     if conexao:
         cursor = conexao.cursor()
-        cursor.execute("SELECT id, nome, telefone, email, id_produto FROM fornecedores ORDER BY id")
+        cursor.execute(
+            "SELECT f.id, f.nome, f.telefone, f.email, p.nome AS produto FROM fornecedores AS f INNER JOIN produtos AS p ON p.id = f.id_produto ORDER BY f.id"
+                       )
         fornecedores = cursor.fetchall()
         cursor.close()
         conexao.close()
     return jsonify (fornecedores)
 
 @app.route("/vendas", methods=["GET", "POST"])
-def index():
+def index5():
     if request.method == "POST":
         id_cliente = request.form["id_cliente"]
         id_produto = request.form["id_produto"]
@@ -195,9 +205,13 @@ def index():
     conexao = conectar_bd()
     if conexao:
         cursor = conexao.cursor()
-        cursor.execute("SELECT id, id_cliente, id_produto, data, quantidade, valor FROM vendas ORDER BY id")
+        cursor.execute(
+            "SELECT v.id, c.nome AS cliente, p.nome AS produto, v.data, v.quantidade, v.valor FROM vendas AS v INNER JOIN clientes AS c ON c.id = v.id_cliente INNER JOIN produtos AS p ON p.id = v.id_produto ORDER BY v.id"
+            )
         vendas = cursor.fetchall()
         cursor.close()
         conexao.close()
     return jsonify (vendas)
 
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)

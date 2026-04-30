@@ -1,4 +1,4 @@
-const API = "http://localhost:5000";
+const API = "http://localhost:5001";
 
 document.getElementById("formCliente").addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -116,7 +116,7 @@ async function carregarProdutos() {
     });
 }
 
-carregarClientes();
-carregarPets();
-carregarServicos();
-carregarProdutos();
+// carregarClientes();
+// carregarPets();
+// carregarServicos();
+// carregarProdutos();
