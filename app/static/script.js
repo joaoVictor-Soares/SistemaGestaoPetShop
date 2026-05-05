@@ -1,4 +1,4 @@
-const API = "http://localhost:5001";
+const API = "http://localhost:5000";
 
 document.getElementById("formCliente").addEventListener("submit", async (e) => {
     e.preventDefault();

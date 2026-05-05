@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: flask-servide
-  namespace: gestao-petshop
+  name: flask-service
+  namespace: gestao
 spec:
   selector:
     app: flask-app
-  ports:
+  ports: 
     - port: 5000
       targetPort: 5000
   type: ClusterIP
