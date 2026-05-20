@@ -24,7 +24,15 @@ async function carregarClientes() {
     lista.innerHTML = "";
 
     data.forEach(c => {
-        lista.innerHTML += `<li>${c[1]} - ${c[2]}</li>`;
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+        <td>${c[1]}</td>
+        <td>${c[2]}</td>
+        <td>${c[3]}</td>
+        `;
+
+        lista.appendChild(row)
     });
 }
 
@@ -49,26 +57,47 @@ document.getElementById("formPet").addEventListener("submit", async (e) => {
 async function carregarPets() {
     const res = await fetch(`${API}/pets`);
     const data = await res.json();
+    const select = document.getElementById("id_cliente");
+    const resCliente = await fetch(`${API}/cliente`);
+    const clientes = await resCliente.json(); 
+
+    select.innerHTML = '<option value="" disabled selected>Selecione o Dono (Cliente)</option>';
+
+    clientes.forEach(c => {
+        const option = document.createElement('option');
+        option.value = c[0];       
+        option.textContent = c[1];
+        select.appendChild(option);
+    });
 
     const lista = document.getElementById("listaPets");
     lista.innerHTML = "";
 
-    data.forEach(p => {
-        lista.innerHTML += `<li>${p[1]} (${p[2]})</li>`;
+    data.forEach(c => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${c[1]}</td>
+            <td>${c[2]}</td>
+            <td>${c[3]}</td>
+            <td>${c[4]}</td>
+            <td>${c[5]}</td>
+        `;
+        lista.appendChild(row);
     });
 }
 
 document.getElementById("formServico").addEventListener("submit", async (e) => {
     e.preventDefault();
+    const form = e.target; 
 
     await fetch(`${API}/servicos`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({
-            id_pet: id_pet.value,
-            tipo: tipo_servico.value,
-            data: data.value,
-            valor: valor.value
+            id_pet: form.querySelector("#id_pet").value,
+            tipo: form.querySelector("#tipo_servico").value,
+            data: form.querySelector("#data_service").value,
+            valor: form.querySelector("#valor").value
         })
     });
 
@@ -78,45 +107,204 @@ document.getElementById("formServico").addEventListener("submit", async (e) => {
 async function carregarServicos() {
     const res = await fetch(`${API}/servicos`);
     const data = await res.json();
+    const select = document.getElementById("id_pet");
+    const resCliente = await fetch(`${API}/pets`);
+    const clientes = await resCliente.json(); 
+
+    select.innerHTML = '<option value="" disabled selected>Selecione o Pet</option>';
+
+    clientes.forEach(c => {
+        const option = document.createElement('option');
+        option.value = c[0];       
+        option.textContent = c[1];
+        select.appendChild(option);
+    });
+    
 
     const lista = document.getElementById("listaServicos");
     lista.innerHTML = "";
 
-    data.forEach(s => {
-        lista.innerHTML += `<li>Pet ${s[1]} - ${s[2]} - R$${s[4]}</li>`;
+    data.forEach(c => {
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+        <td>${c[1]}</td>
+        <td>${c[2]}</td>
+        <td>${c[3]}</td>
+        <td>${c[4]}</td>
+        `;
+
+        lista.appendChild(row)
     });
 }
 
 document.getElementById("formProduto").addEventListener("submit", async (e) => {
     e.preventDefault();
+    const form = e.target; 
 
     await fetch(`${API}/produtos`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({
-            nome: nome_produto.value,
-            descricao: descricao.value,
-            preco: preco.value,
-            quantidade: quantidade.value
+            nome: form.querySelector("#nome_produto").value,
+            descricao: form.querySelector("#descricao").value,
+            preco: form.querySelector("#preco").value,
+            quantidade: parseInt(form.querySelector("#quantidade").value) 
         })
     });
-
     carregarProdutos();
 });
 
 async function carregarProdutos() {
     const res = await fetch(`${API}/produtos`);
     const data = await res.json();
+    const select = document.getElementById("produto");
+    const resCliente = await fetch(`${API}/produtos`);
+    const clientes = await resCliente.json(); 
+
+    select.innerHTML = '<option value="" disabled selected>Selecione o Produto</option>';
+
+    clientes.forEach(c => {
+        const option = document.createElement('option');
+        option.value = c[0];       
+        option.textContent = c[1];
+        select.appendChild(option);
+    });
 
     const lista = document.getElementById("listaProdutos");
     lista.innerHTML = "";
 
-    data.forEach(p => {
-        lista.innerHTML += `<li>${p[1]} - R$${p[3]}</li>`;
+    data.forEach(c => {
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+        <td>${c[1]}</td>
+        <td>${c[2]}</td>
+        <td>${c[3]}</td>
+        <td>${c[4]}</td>
+        `;
+
+        lista.appendChild(row)
     });
 }
 
-// carregarClientes();
-// carregarPets();
-// carregarServicos();
-// carregarProdutos();
+document.getElementById("formFornecedor").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const form = e.target;
+
+    await fetch(`${API}/fornecedores`, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+            nome: form.querySelector("#nome_fornecedor").value,
+            telefone: form.querySelector("#telefone").value,
+            email: form.querySelector("#email").value,
+            id_produto: parseInt(form.querySelector("#produto").value)
+        })
+    });
+    carregarFornecedores();
+});
+
+async function carregarFornecedores() {
+    const res = await fetch(`${API}/fornecedores`);
+    const data = await res.json();
+    const select = document.getElementById("produto");
+    const resCliente = await fetch(`${API}/produtos`);
+    const clientes = await resCliente.json(); 
+
+    select.innerHTML = '<option value="" disabled selected>Selecione o Produto</option>';
+
+    clientes.forEach(c => {
+        const option = document.createElement('option');
+        option.value = c[0];       
+        option.textContent = c[1];
+        select.appendChild(option);
+    });
+
+    const lista = document.getElementById("listaFornecedores");
+    lista.innerHTML = "";
+
+    data.forEach(c => {
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+        <td>${c[1]}</td>
+        <td>${c[2]}</td>
+        <td>${c[3]}</td>
+        <td>${c[4]}</td>
+        `;
+
+        lista.appendChild(row)
+    });
+}
+
+document.getElementById("formVenda").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const form = e.target;
+
+    await fetch(`${API}/vendas`, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+            id_cliente: form.querySelector("#venda_cliente").value, 
+            id_produto: form.querySelector("#venda_produto").value,
+            data: form.querySelector("#data").value,
+            quantidade: parseInt(form.querySelector("#quantidade").value),
+            valor: form.querySelector("#valor").value
+        })
+    });
+    
+    form.reset();
+    carregarVendas();
+    carregarProdutos(); 
+});
+
+async function carregarVendas() {
+    const res = await fetch(`${API}/vendas`);
+    const data = await res.json();
+
+    const selectCliente = document.getElementById("venda_cliente");
+    const resClientes = await fetch(`${API}/cliente`);
+    const clientes = await resClientes.json();
+    
+    selectCliente.innerHTML = '<option value="" disabled selected>Selecione o Cliente</option>';
+    clientes.forEach(c => {
+        const option = document.createElement('option');
+        option.value = c[0];
+        option.textContent = c[1];
+        selectCliente.appendChild(option);
+    });
+
+    const selectProduto = document.getElementById("venda_produto");
+    const resProdutos = await fetch(`${API}/produtos`);
+    const produtos = await resProdutos.json();
+    
+    selectProduto.innerHTML = '<option value="" disabled selected>Selecione o Produto</option>';
+    produtos.forEach(p => {
+        const option = document.createElement('option');
+        option.value = p[0];
+        option.textContent = p[1];
+        selectProduto.appendChild(option);
+    });
+
+    const lista = document.getElementById("listaVendas");
+    lista.innerHTML = "";
+
+    data.forEach(c => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${c[1]}</td>
+            <td>${c[2]}</td>
+            <td>${c[3]}</td>
+            <td>${c[4]}</td>
+            <td>${c[5]}</td>
+        `;
+        lista.appendChild(row);
+    });
+}
+carregarClientes();
+carregarPets();
+carregarServicos();
+carregarProdutos();
+carregarFornecedores();
+carregarVendas();

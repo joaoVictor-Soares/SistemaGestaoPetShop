@@ -5,7 +5,7 @@
     <title>PetShop</title>
     <style>
         body {
-            font-family: Arial;
+            font-family: Arial, sans-serif;
             background: #0f172a;
             color: white;
             padding: 20px;
@@ -13,34 +13,161 @@
 
         h1 {
             text-align: center;
+            margin-bottom: 30px;
         }
 
         section {
             background: #1e293b;
-            padding: 15px;
+            padding: 20px;
             margin: 20px 0;
             border-radius: 10px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
         }
 
-        input {
+        form {
+            margin-bottom: 20px;
+        }
+
+        input, select {
             margin: 5px;
             padding: 8px;
+            background: #334155;
+            border: 1px solid #475569;
+            color: white;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input::placeholder {
+            color: #94a3b8;
+        }
+
+        select {
+            cursor: pointer;
+            padding-right: 24px;
+            font-family: Arial, sans-serif;
+            height: 35px;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgb(59 130 246 / 0.3);
+        }
+
+        select option {
+            background-color: #1e293b;
+            color: white;
+            padding: 8px;
+        }
+
+        select option:disabled {
+            color: #64748b;
         }
 
         button {
-            padding: 8px;
+            padding: 8px 16px;
             background: #3b82f6;
             color: white;
             border: none;
+            border-radius: 4px;
             cursor: pointer;
+            font-weight: bold;
+            height: 35px;
         }
 
         button:hover {
             background: #2563eb;
         }
 
-        ul {
-            margin-top: 10px;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: #0f172a;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        th {
+            background-color: #334155;
+            color: #38bdf8;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr {
+            transition: background-color 0.2s ease;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #1e293b;
+        }
+
+        tbody tr:hover {
+            background-color: #475569 !important;
+        }
+
+        tbody:empty::after {
+            content: "Nenhum registro encontrado.";
+            display: block;
+            padding: 15px;
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        .table-container {
+            max-height: 250px;
+            overflow-y: auto;
+            margin-top: 15px;
+            border-radius: 8px;
+            background: #0f172a;
+            border: 1px solid #334155;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0;
+        }
+
+        th {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            background-color: #334155;
+            color: #38bdf8;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            padding: 12px 15px;
+        }
+
+        .table-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+            background: #1e293b;
+            border-radius: 8px;
+        }
+         
+        .table-container::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 8px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
         }
     </style>
 </head>
@@ -57,7 +184,18 @@
         <button type="submit">Cadastrar</button>
     </form>
 
-    <ul id="listaClientes"></ul>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome do Cliente</th>
+                    <th>Telefone</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody id="listaClientes"></tbody>
+        </table>
+    </div>
 </section>
 
 <section>
@@ -67,24 +205,53 @@
         <input type="text" id="tipo" placeholder="Tipo" required>
         <input type="text" id="raca" placeholder="Raça" required>
         <input type="number" id="idade" placeholder="Idade" required>
-        <input type="number" id="id_cliente" placeholder="ID Cliente" required>
+        <select id="id_cliente" required>
+            <option value="" disabled selected>Selecione o Cliente</option>
+        </select>
         <button type="submit">Cadastrar</button>
     </form>
 
-    <ul id="listaPets"></ul>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome do Pet</th>
+                    <th>Tipo</th>
+                    <th>Raça</th>
+                    <th>Idade</th>
+                    <th>Nome do Cliente</th>
+                </tr>
+            </thead>
+            <tbody id="listaPets"></tbody>
+        </table>
+    </div>
 </section>
 
 <section>
     <h2>Serviços</h2>
     <form id="formServico">
-        <input type="number" id="id_pet" placeholder="ID Pet" required>
+        <select id="id_pet" required>
+            <option value="" disabled selected>Selecione o Pet</option>
+        </select>
         <input type="text" id="tipo_servico" placeholder="Tipo (banho/tosa)" required>
-        <input type="date" id="data" required>
+        <input type="date" id="data_service" required>
         <input type="number" id="valor" placeholder="Valor" required>
         <button type="submit">Registrar</button>
     </form>
 
-    <ul id="listaServicos"></ul>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome do Pet</th>
+                    <th>Tipo</th>
+                    <th>Data</th>
+                    <th>Valor</th>
+                </tr>
+            </thead>
+            <tbody id="listaServicos"></tbody>
+        </table>
+    </div>
 </section>
 
 <section>
@@ -97,7 +264,77 @@
         <button type="submit">Cadastrar</button>
     </form>
 
-    <ul id="listaProdutos"></ul>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Descrição</th>
+                    <th>Preço</th>
+                    <th>Quantidade</th>
+                </tr>
+            </thead>
+            <tbody id="listaProdutos"></tbody>
+        </table>
+    </div>
+</section>
+
+<section>
+    <h2>Fornecedores</h2>
+    <form id="formFornecedor">
+        <input type="text" id="nome_fornecedor" placeholder="Nome" required>
+        <input type="number" id="telefone" placeholder="Telefone" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <select id="produto" required>
+            <option value="" disabled selected>Selecione o Produto</option>
+        </select>
+        <button type="submit">Cadastrar</button>
+    </form>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Telefone</th>
+                    <th>Email</th>
+                    <th>Produto</th>
+                </tr>
+            </thead>
+            <tbody id="listaFornecedores"></tbody>
+        </table>
+    </div>
+</section>
+
+<section>
+    <h2>Vendas</h2>
+    <form id="formVenda">
+        <select id="venda_cliente" required>
+            <option value="" disabled selected>Selecione o Cliente</option>
+        </select>
+        <select id="venda_produto" required>
+            <option value="" disabled selected>Selecione o Produto</option>
+        </select>
+        <input type="date" id="data" placeholder="Data" required>
+        <input type="number" id="quantidade" placeholder="Quantidade" required>
+        <input type="number" id="valor" placeholder="Valor" required>
+        <button type="submit">Cadastrar</button>
+    </form>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Produto</th>
+                    <th>Data</th>
+                    <th>Quantidade</th>
+                    <th>Valor</th>
+                </tr>
+            </thead>
+            <tbody id="listaVendas"></tbody>
+        </table>
+    </div>
 </section>
 
 <script src="../static/script.js"></script>

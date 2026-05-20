@@ -7,7 +7,6 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-# Configurações via Variáveis de Ambiente (Kubernetes)
 DB_HOST = os.getenv("DB_HOST", "mysql-service")
 DB_NAME = os.getenv("DB_NAME", "PetShop")
 DB_USER = os.getenv("DB_USER", "user")
@@ -28,7 +27,7 @@ def conectar_bd():
             tentativas -= 1
             time.sleep(3)
     return 
-# Adicione esta rota logo acima da index para a página inicial não dar erro 500
+
 @app.route("/")
 def home():
     return "Servidor PetShop rodando! Acesse /cliente para ver os dados."
@@ -164,9 +163,8 @@ def index4():
         conexao = conectar_bd()
         if conexao:
             cursor = conexao.cursor()
-            # CORREÇÃO: Tabela correta é fornecedores e campos id_produto incluído
             cursor.execute(
-                "INSERT INTO fornecedores (nome, telefone, email, id_produto) VALUES(%s, %s, %s, %s)",
+                "INSERT INTO suppliers (nome, telefone, email, id_produto) VALUES(%s, %s, %s, %s)",
                 (nome, telefone, email, id_produto)
             )
             conexao.commit()
@@ -191,18 +189,28 @@ def index5():
         id_cliente = request.form["id_cliente"]
         id_produto = request.form["id_produto"]
         data = request.form["data"]
-        quantidade = request.form["quantidade"]
+        quantidade = int(request.form["quantidade"])
         valor = request.form["valor"]
 
         conexao = conectar_bd()
         if conexao:
             cursor = conexao.cursor()
-            # CORREÇÃO: Ordem dos parâmetros na tupla (quantidade e valor)
-            cursor.execute(
-                "INSERT INTO vendas (id_cliente, id_produto, data, quantidade, valor) VALUES(%s, %s, %s, %s, %s)",
-                (id_cliente, id_produto, data, quantidade, valor)
-            )
-            conexao.commit()
+            
+            cursor.execute("SELECT quantidade FROM produtos WHERE id = %s", (id_produto,))
+            resultado = cursor.fetchone()
+            
+            if resultado and resultado[0] >= quantidade:
+                cursor.execute(
+                    "INSERT INTO vendas (id_cliente, id_produto, data, quantidade, valor) VALUES(%s, %s, %s, %s, %s)",
+                    (id_cliente, id_produto, data, quantidade, valor)
+                )
+                
+                cursor.execute(
+                    "UPDATE produtos SET quantidade = quantidade - %s WHERE id = %s",
+                    (quantidade, id_produto)
+                )
+                conexao.commit()
+                
             cursor.close()
             conexao.close()
 
